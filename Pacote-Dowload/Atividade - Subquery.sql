@@ -106,7 +106,13 @@ select*from departamento;
 select*from dependente;
 select*from empregado;
 
+
 # 1 - Faça o comando SQL que mostre somente os empregados que trabalham em algum projeto.
+select * from empregado
+where codEmp in
+	(select codEmp
+	from projeto_empregado);	
+
 
 # 2 - Faça o comando SQL que mostre o nome do departamento, a média de salários do departamento e a média de salários de toda a empresa.
 
@@ -119,7 +125,10 @@ select*from empregado;
 # 6 - Faça o comando SQL que mostre o nome dos empregados que têm o maior salário.
 
 # 7 - Faça o comando SQL que mostre o nome dos empregados que não têm dependentes.
-
+select nome from empregado
+ where codEmp not in
+	(select codEmp
+    from dependente);
 
 
 
