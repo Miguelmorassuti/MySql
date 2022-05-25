@@ -4,11 +4,10 @@ use dados;
 CREATE TABLE Empregado (
 codEmp int not null auto_increment,
 nome varchar(80) not null,
-rg int not null,
+rg varchar(15),
 salario DECIMAL(9,2) not null,
-#codDepto int not null,
 gerente char(1) not null,
-CONSTRAINT PK_Empregado PRIMARY KEY (codEmp)
+CONSTRAINT PRIMARY KEY (codEmp)
 ) ENGINE InnoDB;
 
 CREATE TABLE Dependente (
@@ -19,14 +18,14 @@ rg int,
 sexo char(1) not null,
 data_nasc date not null,
 grau_parantesco varchar(30) not null,
-CONSTRAINT FK_Dependente FOREIGN KEY 
+CONSTRAINT FOREIGN KEY 
 (codEmp) REFERENCES empregado(codEmp)
 ) ENGINE InnoDB;
 
 create table Departamento (
 codDepto int not null,
-Descricao varchar(50) not null,
-CONSTRAINT PK_CodDepto PRIMARY KEY (CodDepto)
+Descricao varchar(40) not null,
+CONSTRAINT PRIMARY KEY (CodDepto)
 )ENGINE INNODB;
 
 
@@ -113,22 +112,50 @@ where codEmp in
 	(select codEmp
 	from projeto_empregado);	
 
-
 # 2 - Faça o comando SQL que mostre o nome do departamento, a média de salários do departamento e a média de salários de toda a empresa.
 
-# 3 - Faça o comando SQL que mostre o código e o nome do projeto, a quantidade de empregados no projeto, o total de horas do projeto.
+select descricao, (select avg(salario) from empregado where departamento.codDepto = empregado.codDpto) as Media_Departamental,
+	(select avg(salario) from empregado) as Media_geral
+from departamento; 
 
-# 4 - Faça o comando SQL que mostre o código e o nome do projeto, a soma dos empregados que trabalham no projeto e o nome do gerente do projeto.
+# 3 - Faça o comando SQL que mostre o código e o nome do projeto, a quantidade de empregados no projeto, o total de horas do projeto.
+select codProj, nome, 
+	(select count(CodEmp) from projeto_empregado where projeto.codProj =
+    projeto_empregado.codProj group by codProj) as Qtd_emp,
+    (select sum(horas) from projeto_empregado where projeto.codProj =
+    projeto_empregado.codProj group by codProj) as horas_totais
+from projeto;
+
+
+# 4 - Faça o comando SQL que mostre o código e o nome do projeto, a soma dos salarios dos empregados que trabalham no projeto e o nome do gerente do projeto.
+# 2 subsqueries - uma para soma e outra para o nome do gerente
+
+#select codProj, nome,
+#	(select sum(salario) from empregado where projeto_empregado.codEmp =
+#    empregado.codEmp group by codEmp)
+#from projeto;
+
+
 
 # 5 - Faça o comando SQL que mostre os 3 projetos com horas gastas maior que a média.
 
+SELECT nome, media, Posicao from(   
+	select nome,
+		(select avg(horas) from projeto_empregado where projeto_empregado.codProj = projeto.codProj) as media,
+		RANK() OVER (ORDER BY (select avg(horas) from projeto_empregado where projeto_empregado.codProj = projeto.codProj)desc) as Posicao
+	from projeto
+) Dados
+where Posicao <= 3;
+
+
 # 6 - Faça o comando SQL que mostre o nome dos empregados que têm o maior salário.
+
+
 
 # 7 - Faça o comando SQL que mostre o nome dos empregados que não têm dependentes.
 select nome from empregado
  where codEmp not in
 	(select codEmp
     from dependente);
-
 
 
