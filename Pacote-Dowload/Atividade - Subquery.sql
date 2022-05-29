@@ -1,3 +1,8 @@
+#Vitor Marques - RA: 615846 
+#Wesley Vianna de Freitas Florian RA - 617024 
+#Miguel Guimarães Morassuti RA - 621927 
+#José Nobre RA: 430439
+
 create database DADOS;
 use dados;
 
@@ -130,10 +135,12 @@ from projeto;
 # 4 - Faça o comando SQL que mostre o código e o nome do projeto, a soma dos salarios dos empregados que trabalham no projeto e o nome do gerente do projeto.
 # 2 subsqueries - uma para soma e outra para o nome do gerente
 
-#select codProj, nome,
-#	(select sum(salario) from empregado where projeto_empregado.codEmp =
-#    empregado.codEmp group by codEmp)
-#from projeto;
+#PEDIR AJUDA PARA O PROF NA SALA
+Select codProj, nome,
+	(select sum(salario) from empregado where projeto_empregado.codEmp =
+    empregado.codEmp group by codEmp) as SomaDosSalarios,
+    (select nome from empregado where gerente like "%Sim%") as nomeGerente
+from projeto;
 
 
 
@@ -149,7 +156,11 @@ where Posicao <= 3;
 
 
 # 6 - Faça o comando SQL que mostre o nome dos empregados que têm o maior salário.
-
+#OS NOMES DE QUEM POSSUI SALÁRIO MAIOR DO QUE A MEDIA
+SELECT nome from empregado
+where salario>
+	(select avg(salario) 
+    from empregado);
 
 
 # 7 - Faça o comando SQL que mostre o nome dos empregados que não têm dependentes.
