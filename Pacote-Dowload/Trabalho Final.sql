@@ -1,8 +1,7 @@
-CREATE SCHEMA IF NOT EXISTS `trabfinal` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `trabfinal` DEFAULT CHARACTER SET utf8mb4 ;
 USE `trabfinal` ;
 
-CREATE TABLE IF NOT EXISTS `trabfinal`.`
-regioes` (
+CREATE TABLE IF NOT EXISTS `trabfinal`.`regioes` (
   `id` INT NOT NULL,
   `regiao` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -5654,31 +5653,37 @@ JOIN regioes ON estados.id = regioes.id where regiao = 'Região Sudeste';
 
 select round(avg(populacao),2) as media from municipios where municipio like "São João%";
 
-
 #4. Qual é o munícipio do estado do Mato Grosso - MT que possuí a maior população?
 
-#select municipio, max(municipios.populacao) from municipios where uf= "MT";
-
-#select * from municipios where municipio = 'Acorizal';
-    	
+select municipio, max(municipios.populacao) from municipios where uf="mt" and populacao =
+	(select max(municipios.populacao) from municipios where uf="mt");
 
 #5. Elabore um DQL que exiba a soma da população por estado, mas somente aquele que o total for maior que 10.000.000.
 # Ordene a saída de forma que os maiores valores de população sejam exibidos primeiro.
 
-#select estados.estado, sum(municipios.populacao) from estados join municipios where estados.uf = municipios.uf; 
-
-#select estado from estados JOIN municipios ON estados.uf = municipios.uf
-#where sum(municipios.populacao) > populacao > '10.000.000';
-    
+select sum(municipios.populacao) as pop_tot,  municipios.uf
+from municipios group by municipios.uf
+having pop_tot > 10000000
+order by pop_tot desc;
 
 #6. Escreva o comando DDL que crie uma VIEW denominada “maiorespopulacoes” sendo o DQL o obtido na solução do exercício 5.
 
+create view maiorespopulacoes
+as select sum(municipios.populacao) as pop_tot,  municipios.uf
+from municipios group by municipios.uf
+having pop_tot > 10000000
+order by pop_tot desc;
+
+select * from maiorespopulacoes;
+
+
 #7. Escreva o comando DDL que crie um índice denominado “i_estados_descricao” para tabela estados, coluna estado.
+
+create index i_estados_descricao on estados(estado);
 
 #8. Escreva o comando DML que a altere o nome do munícipio de “Vera Cruz” do estado de “São Paulo” para “Vera Cruz - SP”.
 UPDATE municipios set municipio = 'Vera Cruz - SP' where municipios.municipio = 'Vera Cruz' and municipios.uf = 'SP';
 
-Select * from municipios where municipio = 'vera Cruz - SP';
 
 #9. Escreva o comando DDL para cria uma nova coluna denominada “cadastro” na tabela estados. O tipo de dados deve ser data 
 #(date) e deve aceitar valores nulos.
