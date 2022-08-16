@@ -71,7 +71,8 @@ foreign key(id_category) references categories(id_category)
 
 /*INSERINDO DADOS NA MINHA NOVA TABLE*/
 insert into conteudo values
-(default, 'PEPPA PIG', 3, '02:00');
+(default, 'PEPPA PIG', 3, '02:00'),
+(default, 'SCOOBY-DO', '3', '01:47:00');
 
 /*CRIANDO TABLE QUE LIGA TABELA DE N PARA N*/
 create table users_conteudo(
@@ -84,8 +85,48 @@ foreign key(id_users) references users(id_user),
 foreign key(id_conteudo) references conteudo(id_conteudo)
 );
 
+/*INSERINDO DADOS NA MINHA NOVA TABLE*/
 insert into users_conteudo values
-(default, 2, 1, '01:10', 10);
+(default, 2, 1, '01:10', 10),
+(default, 1, 2, '00:51', 9);
+
+/* INNER JOIN FAZ A INTERSEÇÃO DE DUAS TABELAS */
+select * from users_conteudo
+inner join users
+on users_conteudo.id_users = users.id_user;
+
+/* LEFT JOIN RETORNA TODOS OS REGISTROS DA TABELA DA ESQUERDA (TABLE 1) E OS REGISTROS CORRESPONDENTES DA DIREITA (TABLE 2) */
+select* from users
+left join users_conteudo
+on users.id_user = users_conteudo.id_users;
+
+/* LEFT JOIN SEM PEGAR A INTERSEÇÃO, RETORNA APENAS O QUE DIFERE DO CONJUNTO DA TABLE 1, (BUSCA ONDE O ID DA TABLE 2 É NULL)  */
+select* from users
+left join users_conteudo
+on users.id_user = users_conteudo.id_users
+where users_conteudo.id_users is null;
+
+/*MySql não tem suporte a full outer join (junta todos os dados das tabelas*/
+
+
+		-- FUNÇÕES IMPORTANTES!! --
+-- COUNT - SERVE PARA CONTAR AS LINHAS DE REGISTRO
+select count(*) from users;
+
+-- MAX - IRA PEGAR O MAIOR VALOR INSERINDO EM UMA COLUNA DA TABLE
+select max(note) from users_conteudo;
+
+-- MIN - IRA PEGAR O MENOR VALOR INSERINDO EM UMA COLUNA DA TABLE
+select min(note) from users_conteudo;
+
+-- AVG - IRA TRAZER A MEDIA DE UMA COLUNA
+select round(avg(note),2) from users_conteudo;
+
+-- SUM - IRA FAZER A SOMA DE TODOS OS CAMPOS DE UMA COLUNA
+select sum(note) from users_conteudo;
+
+-- ORDER BY - IRA COLOCAR EM ORDEM CRESCENTE
+select * from conteudo order by id_conteudo desc; -- desc no final deixa decrescente!
 
 
 
